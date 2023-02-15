@@ -54,7 +54,7 @@ function removeDots(ctx) {
 }
 
 function transformCoords(x, y, half_canvas_size) {
-    r = Number($('input[type="checkbox"]:checked').val());
+    r = 1//Number($('input[type="checkbox"]:checked').val());
     x = ((x - half_canvas_size) * ((r + (r * 0.705)) / half_canvas_size)).toFixed(5);
     y = (((-1 * (y - half_canvas_size))) * ((r + (r * 0.705)) / half_canvas_size)).toFixed(5);
     return {x: x, y: y, r: r};
@@ -104,7 +104,7 @@ $(document).ready(function () {
     */
 });
 
-$('input.button[type=button]').click(function () {
+$('#reset-button').click(function () {
     //$('.button-label').removeClass('invalid').removeClass('glowing_bottons');
     //document.getElementsByName('r').forEach(item => item.checked = item.value === '1');
    // document.getElementsByName('x').forEach(item => item.checked = item.value === '0');
@@ -131,16 +131,16 @@ $("#graf").click((e) => {
     var x = e.offsetX
         y = e.offsetY;
 
-    if ($('input[type="checkbox"]:checked').is(":checked")) {
+    //if ($('input[type="checkbox"]:checked').is(":checked")) {
         localStorage.setItem(localStorage.length,
             JSON.stringify({ x: x, y: y, canvas_size: ctx.canvas.width }));
 
         drawDot(ctx, x, y);
 
         //sendData(transformCoords(x, y, ctx.canvas.width / 2));
-    } else {
+    //} else {
         //$('.button-label').addClass('glowing_bottons');
-    }
+    //}
 });
 
 
