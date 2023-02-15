@@ -4,23 +4,21 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import nick_snt1.lab.util.AreaChecker;
 
-@ManagedBean @SessionScoped
+@Named(value = "pointBean") @SessionScoped 
 public class PointBean implements Serializable {
     
     @Inject private HttpSession session;
@@ -33,49 +31,54 @@ public class PointBean implements Serializable {
     private Connection conn;
 
     @PostConstruct
-    public void init() throws SQLException { 
+    public void init() { 
         point = new Point();
         points = new LinkedList<>();
         sessionId = session.getId();
         connect();
-        loadPoints(); 
-    }
+        loadPoints();
+    } 
+
+    
 
     private void connect() {
-        try {
+        try { 
             DataSource dataSource = (DataSource) new InitialContext().lookup("java:/RootDS");
             conn = dataSource.getConnection();
-            conn.createStatement().execute("CREATE TABLE IF NOT EXISTS points (" +
-                "id  TEXT             PRIMARY KEY," +
+            //conn.createStatement().execute("DROP TABLE points");
+            conn.createStatement().execute("CREATE TABLE IF NOT EXISTS result_table (" +
+                "id  TEXT             NOT NULL," +
                 "x   DOUBLE PRECISION NOT NULL," +
                 "y   DOUBLE PRECISION NOT NULL," +
                 "r   INTEGER          NOT NULL," +
-                "hit TEXT             NOT NULL," +
+                "hit TEXT             NOT NULL" +
             ")");
         } catch (Exception e) {
-            throw new IllegalStateException("Connection to database failed", e);
+            e.printStackTrace();
         }
     }
-    public void loadPoints() throws SQLException {
+    
+    public void loadPoints() {
         try {
-            conn.setAutoCommit(false); conn.setSavepoint();
-            PreparedStatement stmt = conn.prepareStatement( "SELECT * FROM points WHERE id = ?");
+            if (conn == null) connect();
+            System.out.println("Inside load points");
+            PreparedStatement stmt = conn.prepareStatement( "SELECT * FROM result_table WHERE id = ?");
             stmt.setString(1, sessionId);
             ResultSet res = stmt.executeQuery();
             while (res.next()) points.add( new Point(res.getDouble("x"), res.getDouble("y"), res.getInt("r"), res.getString("hit")));
         } catch (Exception e) {
-            conn.rollback();
-        } finally {
-            conn.setAutoCommit(true);
+            e.printStackTrace();
         }
     }
 
-    public String addPoint() throws SQLException {
+    public void addPoint() {
         try {
-            conn.setAutoCommit(false); conn.setSavepoint();
+            if (conn == null) connect();
+            System.out.println("Inside add point");
+      
             point.setHit(AreaChecker.isHit(point.getX(), point.getY(), point.getR().doubleValue()) ? "Hit" : "Miss");
-
-            PreparedStatement stmt = conn.prepareStatement( "INSERT INTO points VALUES (?, ?, ?, ?, ?)");
+            System.out.println("Points: " + point.getX() + " " + point.getY() + " " + point.getR());
+            PreparedStatement stmt = conn.prepareStatement( "INSERT INTO result_table VALUES (?, ?, ?, ?, ?)");
             stmt.setString(1, sessionId);
             stmt.setDouble(2, point.getX());
             stmt.setDouble(3, point.getY());
@@ -83,30 +86,32 @@ public class PointBean implements Serializable {
             stmt.setString(5, point.getHit());
             stmt.execute();
 
+            System.out.println("Statement exec");
+
             points.add(point);
+            System.out.println(points.toString());
             point = new Point();
-            conn.commit();
         } catch (Exception e) {
-            conn.rollback();
-        } finally {
-            conn.setAutoCommit(true);
+            e.printStackTrace();
         }
-        return "redirect";
     } 
 
-    public String clearPoints() throws SQLException {
+    public void clearPoints() {
         try {
-            conn.setAutoCommit(false); conn.setSavepoint();
-            PreparedStatement stmt = conn.prepareStatement( "DELETE FROM points WHERE id = ?");
+            if (conn == null) connect();
+            System.out.println("Inside clear points");
+
+            PreparedStatement stmt = conn.prepareStatement( "DELETE FROM result_table WHERE id = ?");
+            
             stmt.setString(1, sessionId);
             stmt.execute();
             points.clear();
+
+            System.out.println("Exec stmt clear");
         } catch (Exception e) {
-            conn.rollback();
-        } finally {
-            conn.setAutoCommit(true);
+            e.printStackTrace();
         }
-        return "redirect";
+
     }
 
 

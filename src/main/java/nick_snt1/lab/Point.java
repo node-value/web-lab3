@@ -1,6 +1,7 @@
 package nick_snt1.lab;
 
 import java.io.Serializable;
+
 import lombok.*;
 
 @Data @AllArgsConstructor @NoArgsConstructor

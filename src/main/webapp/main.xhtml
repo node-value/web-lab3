@@ -2,17 +2,119 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"    xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui" 
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
 <h:head>
+    <h:outputStylesheet library="css" name="style.css" /> 
+    <meta charset="utf-8" />
     <title>WebLab3</title>
 </h:head>
+
 <h:body>
     <div>
         <h:link outcome="to_index">
             To the previous page
         </h:link>
     </div>
+    <table class="grid" id="main-grid">
+        <!--header-->
+        <tr>
+            <td id="header" colspan="2">
+                <span class="left-alignment">Vladimirov Nikita Alekseevich</span>
+                <span class="right-alignment">#698260</span>
+            </td>
+        </tr>
+        <!--/header-->
+        <!--body-->
+        <tr>
+            <td>
+                <div id="image-container">
+                    <canvas id="graf"></canvas>
+                    <object type="image/svg+xml" data="resources/image/pic.svg" width="100%" height="100%">
+                        Your browser does not support svg
+                    </object>
+                </div>
+            </td>
+    
+            <td id="input-container">
+    
+                <h:form>
+                    <table class="grid" id="input-grid">
+                        <tr>
+                            <td>
+                                <div class="line">
+                                    <h:outputLabel styleClass="head-label" id="x">X: </h:outputLabel>
+                                    <p:spinner value="#{pointBean.point.x}" min="-5" max="5" stepFactor="0.1" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h:outputLabel styleClass="head-label">Y: </h:outputLabel>
+                                <h:inputText styleClass="head-label" id="y-field" maxlength="6" step="0.1"
+                                    autocomplete="off" a:placeholder="-3...5" value="#{pointBean.point.y}"
+                                    validatorMessage="Enter number from -5 to 3">
+                                    <f:validateRequired />
+                                    <f:validateDoubleRange minimum="-5" maximum="3" />
+                                    <br /><h:message id="m6" for="y-field" style="color:red" />
+                                </h:inputText>
+                            </td>
+                        </tr>
+    
+                        <tr>
+                            <td>
+                                <h:outputLabel styleClass="head-label">R: </h:outputLabel>                   
+                                <h:selectOneMenu id="r" value="#{pointBean.point.r}"> <!--styleClass=""-->
+                                    <f:selectItem itemLabel="1" itemValue="1" />
+                                    <f:selectItem itemLabel="2" itemValue="2" />
+                                    <f:selectItem itemLabel="3" itemValue="3" />
+                                    <f:selectItem itemLabel="4" itemValue="4" />
+                                    <f:selectItem itemLabel="5" itemValue="5" />
+                                    <f:validateRequired />
+                                </h:selectOneMenu>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="line">
+                                <p:commandButton ajax="true" styleClass="button" value="Submit" action="#{pointBean.addPoint}" update="table"/>
+                                <p:commandButton ajax="true" styleClass="button" value="Reset"  action="#{pointBean.clearPoints}" update="table" immediate="true" />
+                            </td>
+                        </tr>
+                    </table>
+                </h:form>
+            </td>
+        </tr>
+        <!--results-->
+        <tr>
+            <td colspan="2">
+                <div class="scroll-container">
+                    <h:dataTable id="table" styleClass="result-table" value="#{pointBean.points}" var="point">
+                        <h:column headerClass="coords-col">
+                            <f:facet name="header">X</f:facet>
+                            <h:outputText value="#{point.x}" />
+                        </h:column>
+                        <h:column headerClass="coords-col">
+                            <f:facet name="header">Y</f:facet>
+                            <h:outputText value="#{point.y}" />
+                        </h:column>
+                        <h:column headerClass="coords-col">
+                            <f:facet name="header">R</f:facet>
+                            <h:outputText value="#{point.r}" />
+                        </h:column>
+                        <h:column headerClass="hit-col">
+                            <f:facet name="header">Hit result</f:facet>
+                            <h:outputText value="#{point.hit}" />
+                        </h:column>
+                    </h:dataTable>
+                </div>
+            </td>
+        </tr>
+        <!--results-->
+    </table>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!--<h:outputScript library="js" name="on_click.js" />-->
 </h:body>
 
 
