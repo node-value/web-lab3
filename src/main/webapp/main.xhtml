@@ -32,11 +32,17 @@
         <tr>
             <td>
                 <div id="image-container">
-                    <canvas id="graf"></canvas>
-                    <object type="image/svg+xml" data="resources/image/pic.svg" width="100%" height="100%">
-                        Your browser does not support svg
-                    </object>
-                </div>
+                    <h:form id="canvas_form">
+                        <h:inputHidden id="canvas_x" value="#{pointBean.point.x}" />
+                        <h:inputHidden id="canvas_y" value="#{pointBean.point.y}" />
+                        <h:inputHidden id="canvas_r" value="#{pointBean.point.r}" />
+                        <canvas id="graf"></canvas>
+                        <object type="image/svg+xml" data="resources/image/pic.svg" width="100%" height="100%">
+                            Your browser does not support svg
+                        </object>
+                        <p:remoteCommand name="canvas_submit" action="#{pointBean.addPoint}" update="table" />
+                    </h:form>
+                </div> 
             </td>
     
             <td id="input-container">

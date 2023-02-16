@@ -2,16 +2,15 @@ var ctx = $("#graf")[0].getContext("2d");
 
 resizeCtxCanvas(ctx);
 
-
 function onlyOne(checkbox) {
     document.getElementsByName('r').forEach((item) => { if (item !== checkbox) item.checked = false; });
-    $('input[type="checkbox"]').is(":checked") 
-        ? $('.button-label').removeClass('invalid').removeClass('glowing_bottons') 
+    $('input[type="checkbox"]').is(":checked")
+        ? $('.button-label').removeClass('invalid').removeClass('glowing_bottons')
         : $('.button-label').addClass('invalid');
 }
 
 function validate() {
-    return $("input[type='radio']:checked").length === 1 && document.getElementById("y-field").validity.valid && $('input[type="checkbox"]').is(":checked"); 
+    return $("input[type='radio']:checked").length === 1 && document.getElementById("y-field").validity.valid && $('input[type="checkbox"]').is(":checked");
 }
 
 function getRow(obj) {
@@ -39,7 +38,7 @@ function redrawDots(ctx) {
 
 function drawDot(ctx, x, y) {
     let circle = new Path2D();
-    circle.arc(x, y, 8, 0, 2*Math.PI);
+    circle.arc(x, y, 8, 0, 2 * Math.PI);
     ctx.fillStyle = "#f5f5f5";
     ctx.fill(circle);
 }
@@ -54,10 +53,11 @@ function removeDots(ctx) {
 }
 
 function transformCoords(x, y, half_canvas_size) {
-    r = 1//Number($('input[type="checkbox"]:checked').val());
+    console.log(Number($('#j_idt10\\:r').val()));
+    r = Number($('#j_idt10\\:r').val());
     x = ((x - half_canvas_size) * ((r + (r * 0.705)) / half_canvas_size)).toFixed(5);
     y = (((-1 * (y - half_canvas_size))) * ((r + (r * 0.705)) / half_canvas_size)).toFixed(5);
-    return {x: x, y: y, r: r};
+    return { x: x, y: y, r: r };
 
 }
 
@@ -90,7 +90,6 @@ $('form').on('submit', function (event) {
 
 
 $(document).ready(function () {
-    //resizeCtxCanvas(ctx);
     redrawDots(ctx);
     /*
     $.ajax({
@@ -100,14 +99,16 @@ $(document).ready(function () {
             for (i = 0; i < Object.keys(data).length; i++) 
                 $('#result-table').append(getRow(data[i])); 
         }
-    });
+    });#j_idt7\:reset-button 
     */
 });
 
-$('#reset-button').click(function () {
+$('#j_idt10\\:reset-button').click(function () {
+    console.log(ctx.canvas.width);
+    console.log(ctx.canvas.height);
     //$('.button-label').removeClass('invalid').removeClass('glowing_bottons');
     //document.getElementsByName('r').forEach(item => item.checked = item.value === '1');
-   // document.getElementsByName('x').forEach(item => item.checked = item.value === '0');
+    // document.getElementsByName('x').forEach(item => item.checked = item.value === '0');
     //$('#y-field').val('0');
     localStorage.clear();
     removeDots(ctx);
@@ -132,18 +133,21 @@ $("#graf").click((e) => {
         y = e.offsetY;
 
     //if ($('input[type="checkbox"]:checked').is(":checked")) {
-        localStorage.setItem(localStorage.length,
-            JSON.stringify({ x: x, y: y, canvas_size: ctx.canvas.width }));
+    localStorage.setItem(localStorage.length,
+        JSON.stringify({ x: x, y: y, canvas_size: ctx.canvas.width }));
 
-        drawDot(ctx, x, y);
+    drawDot(ctx, x, y);
 
-        //sendData(transformCoords(x, y, ctx.canvas.width / 2));
+    const { x: x0, y: y0, r} = transformCoords(x, y, ctx.canvas.width / 2);
+
+    document.getElementById("canvas_form:canvas_x").value = x0;
+    document.getElementById("canvas_form:canvas_y").value = y0;
+    document.getElementById("canvas_form:canvas_r").value = r;
+    canvas_submit();
+    //$("#j_idt10\\:spinner_input").val = a 
+    //$("#j_idt10\\:y").val = b 
+
     //} else {
-        //$('.button-label').addClass('glowing_bottons');
+    //$('.button-label').addClass('glowing_bottons');
     //}
 });
-
-
-
-
-
