@@ -26,7 +26,7 @@ public class PointBean implements Serializable {
     private String sessionId;
 
     @Getter @Setter private      Point  point;
-    @Getter @Setter private List<Point> points;
+    @Getter @Setter private LinkedList<Point> points;
 
     private Connection conn;
 
@@ -112,6 +112,10 @@ public class PointBean implements Serializable {
             e.printStackTrace();
         }
 
+    }
+
+    public Point getLastPoint() {
+        return points.peekLast();
     }
 
 

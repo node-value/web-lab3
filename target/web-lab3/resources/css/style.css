@@ -12,7 +12,7 @@ body {
     }
 
     50% {
-        background-color: rgb(250, 44, 44);
+        background-color: #fa2c2c;
         box-shadow: 0 0 20px rgb(250, 44, 44);
     }
 
