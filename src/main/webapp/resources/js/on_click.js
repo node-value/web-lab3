@@ -2,27 +2,6 @@ var ctx = $("#graf")[0].getContext("2d");
 
 resizeCtxCanvas(ctx);
 
-function onlyOne(checkbox) {
-    document.getElementsByName('r').forEach((item) => { if (item !== checkbox) item.checked = false; });
-    $('input[type="checkbox"]').is(":checked")
-        ? $('.button-label').removeClass('invalid').removeClass('glowing_bottons')
-        : $('.button-label').addClass('invalid');
-}
-
-function validate() {
-    return $("input[type='radio']:checked").length === 1 && document.getElementById("y-field").validity.valid && $('input[type="checkbox"]').is(":checked");
-}
-
-function getRow(obj) {
-    return '<tr class="removable">'
-        + '<td>' + obj.x + '</td>'
-        + '<td>' + obj.y + '</td>'
-        + '<td>' + obj.r + '</td>'
-        + '<td>' + obj.hit + '</td>'
-        + '<td>' + obj.curtime + '</td>'
-        + '<td>' + obj.exectime + '</td>';
-}
-
 function resizeCtxCanvas(ctx) {
     const { width, height } = ctx.canvas.getBoundingClientRect();
     ctx.canvas.width = width;
@@ -53,47 +32,29 @@ function removeDots(ctx) {
 }
 
 function transformCoords(x, y, half_canvas_size) {
-    console.log(Number($('#main-form\\:r').val()));
     r = Number($('#main-form\\:r').val());
     x = ((x - half_canvas_size) * ((r + (r * 0.705)) / half_canvas_size)).toFixed(5);
     y = (((-1 * (y - half_canvas_size))) * ((r + (r * 0.705)) / half_canvas_size)).toFixed(5);
     return { x: x, y: y, r: r };
-
 }
 
-/* 
-function sendData(data) {
-    $.ajax({
-        url: 'http://127.0.0.1:3107/web-lab2/controller_servlet',
-        dataType: "json",
-        data: data,
-        beforeSend: () => $('.button').attr('disabled', 'disabled'),
-        success: function (data) {
-            $('.button').attr('disabled', false);
-            $('#result-table').append(getRow(data));
-        },
-        statusCode: {
-            400: (x) => alert(x)
-        },
-        error: () => alert("Something went wrong!")
-    });
+function inverseTransformCoords(x, y, half_canvas_size, r) {
+    var new_x = Math.round((x / ((r + (r * 0.705)) / half_canvas_size)) + half_canvas_size);
+    var new_y = Math.round(((-1 * y) / ((r + (r * 0.705)) / half_canvas_size)) + half_canvas_size);
+    return { x: new_x, y: new_y };
 }
-*/
 
-/* 
-$('form').on('submit', function (event) {
-    event.preventDefault();
-    if (!validate()) return;
-    sendData($('form').serialize());
-});
-*/
 
 function validateX(x) {
-    return !(x == undefined || x == "" || x > 5 || x < -5);
+    return !(x == undefined || isNaN(x) || x == "" || x > 5 || x < -5);
 }
 
 function validateY(y) {
-    return !(y == undefined || y == "" || y > 5 || y < -3);
+    return !(y == undefined || isNaN(y) || y == "" || y > 5 || y < -3);
+}
+
+function storeValues(x, y) {
+    localStorage.setItem(localStorage.length, JSON.stringify({ x: x, y: y, canvas_size: ctx.canvas.width }));
 }
 
 $(document).ready(function () {
@@ -103,6 +64,9 @@ $(document).ready(function () {
 $('#main-form\\:reset-button').click(function () {
     $('#main-form\\:spinner_input').removeClass('glowing_bottons') 
     $('#main-form\\:y').removeClass('glowing_bottons')
+    $('#main-form\\:spinner_input').val('');
+    $('#main-form\\:y').val('');
+    $('#main-form\\:r').val('1');
     localStorage.clear();
     removeDots(ctx);
 });
@@ -111,8 +75,14 @@ $('#main-form\\:reset-button').click(function () {
 $('#main-form\\:submit-button').click(function () {
     let x = $('#main-form\\:spinner_input').val()
         y = $('#main-form\\:y').val()
+        r = $('#main-form\\:r').val()
     if (!validateX(x)) $('#main-form\\:spinner_input').addClass('glowing_bottons');
     if (!validateY(y)) $('#main-form\\:y').addClass('glowing_bottons');
+    else {
+        const { x: x0, y: y0 } = inverseTransformCoords(Number(x), Number(y), ctx.canvas.width / 2, Number(r));
+        storeValues(x0, y0);
+        drawDot(ctx, x0, y0);
+    }
 
 });
 
@@ -137,8 +107,7 @@ $("#graf").click((e) => {
     var x = e.offsetX
         y = e.offsetY;
 
-    localStorage.setItem(localStorage.length,
-        JSON.stringify({ x: x, y: y, canvas_size: ctx.canvas.width }));
+    storeValues(x, y)
 
     drawDot(ctx, x, y);
 
@@ -149,6 +118,6 @@ $("#graf").click((e) => {
     document.getElementById("canvas_form:canvas_r").value = r;
     canvas_submit();
 
-    //$('.button-label').addClass('glowing_bottons');
- 
+    //var hitResult = $(".result-table tbody tr:last-child").text();
+    //console.log(hitResult);
 });
