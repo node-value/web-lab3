@@ -53,8 +53,8 @@ function removeDots(ctx) {
 }
 
 function transformCoords(x, y, half_canvas_size) {
-    console.log(Number($('#j_idt10\\:r').val()));
-    r = Number($('#j_idt10\\:r').val());
+    console.log(Number($('#main-form\\:r').val()));
+    r = Number($('#main-form\\:r').val());
     x = ((x - half_canvas_size) * ((r + (r * 0.705)) / half_canvas_size)).toFixed(5);
     y = (((-1 * (y - half_canvas_size))) * ((r + (r * 0.705)) / half_canvas_size)).toFixed(5);
     return { x: x, y: y, r: r };
@@ -88,18 +88,41 @@ $('form').on('submit', function (event) {
 });
 */
 
+function validateX(x) {
+    return !(x == undefined || x == "" || x > 5 || x < -5);
+}
+
+function validateY(y) {
+    return !(y == undefined || y == "" || y > 5 || y < -3);
+}
 
 $(document).ready(function () {
     redrawDots(ctx);
 });
 
-$('#j_idt10\\:reset-button').click(function () {
-    console.log(ctx.canvas.width);
-    console.log(ctx.canvas.height);
+$('#main-form\\:reset-button').click(function () {
+    $('#main-form\\:spinner_input').removeClass('glowing_bottons') 
+    $('#main-form\\:y').removeClass('glowing_bottons')
     localStorage.clear();
     removeDots(ctx);
 });
 
+
+$('#main-form\\:submit-button').click(function () {
+    let x = $('#main-form\\:spinner_input').val()
+        y = $('#main-form\\:y').val()
+    if (!validateX(x)) $('#main-form\\:spinner_input').addClass('glowing_bottons');
+    if (!validateY(y)) $('#main-form\\:y').addClass('glowing_bottons');
+
+});
+
+$('#main-form\\:spinner_input').click(function () {
+    $('#main-form\\:spinner_input').removeClass('glowing_bottons') 
+});
+
+$('#main-form\\:y').click(function () {
+    $('#main-form\\:y').removeClass('glowing_bottons')
+})
 
 window.addEventListener('resize', () => {
     resizeCtxCanvas(ctx);
@@ -108,6 +131,9 @@ window.addEventListener('resize', () => {
 
 
 $("#graf").click((e) => {
+    $('#main-form\\:spinner_input').removeClass('glowing_bottons') 
+    $('#main-form\\:y').removeClass('glowing_bottons')
+
     var x = e.offsetX
         y = e.offsetY;
 

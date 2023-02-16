@@ -53,8 +53,8 @@ function removeDots(ctx) {
 }
 
 function transformCoords(x, y, half_canvas_size) {
-    console.log(Number($('#j_idt10\\:r').val()));
-    r = Number($('#j_idt10\\:r').val());
+    console.log(Number($('#main-form\\:r').val()));
+    r = Number($('#main-form\\:r').val());
     x = ((x - half_canvas_size) * ((r + (r * 0.705)) / half_canvas_size)).toFixed(5);
     y = (((-1 * (y - half_canvas_size))) * ((r + (r * 0.705)) / half_canvas_size)).toFixed(5);
     return { x: x, y: y, r: r };
@@ -88,39 +88,41 @@ $('form').on('submit', function (event) {
 });
 */
 
+function validateX(x) {
+    return !(x == undefined || x == "" || x > 5 || x < -5);
+}
+
+function validateY(y) {
+    return !(y == undefined || y == "" || y > 5 || y < -3);
+}
 
 $(document).ready(function () {
     redrawDots(ctx);
-    /*
-    $.ajax({
-        url: 'http://127.0.0.1:3107/web-lab2/controller_servlet?get_table=1',
-        dataType: "json",
-        success: function(data) {  
-            for (i = 0; i < Object.keys(data).length; i++) 
-                $('#result-table').append(getRow(data[i])); 
-        }
-    });#j_idt7\:reset-button 
-    */
 });
 
-$('#j_idt10\\:reset-button').click(function () {
-    console.log(ctx.canvas.width);
-    console.log(ctx.canvas.height);
-    //$('.button-label').removeClass('invalid').removeClass('glowing_bottons');
-    //document.getElementsByName('r').forEach(item => item.checked = item.value === '1');
-    // document.getElementsByName('x').forEach(item => item.checked = item.value === '0');
-    //$('#y-field').val('0');
+$('#main-form\\:reset-button').click(function () {
+    $('#main-form\\:spinner_input').removeClass('glowing_bottons') 
+    $('#main-form\\:y').removeClass('glowing_bottons')
     localStorage.clear();
     removeDots(ctx);
-
-    /*
-    $.ajax({
-        url: 'http://127.0.0.1:3107/web-lab2/controller_servlet?clear_table=1',
-        success: () => $('#result-table tr.removable').remove()
-    });
-    */
 });
 
+
+$('#main-form\\:submit-button').click(function () {
+    let x = $('#main-form\\:spinner_input').val()
+        y = $('#main-form\\:y').val()
+    if (!validateX(x)) $('#main-form\\:spinner_input').addClass('glowing_bottons');
+    if (!validateY(y)) $('#main-form\\:y').addClass('glowing_bottons');
+
+});
+
+$('#main-form\\:spinner_input').click(function () {
+    $('#main-form\\:spinner_input').removeClass('glowing_bottons') 
+});
+
+$('#main-form\\:y').click(function () {
+    $('#main-form\\:y').removeClass('glowing_bottons')
+})
 
 window.addEventListener('resize', () => {
     resizeCtxCanvas(ctx);
@@ -129,10 +131,12 @@ window.addEventListener('resize', () => {
 
 
 $("#graf").click((e) => {
+    $('#main-form\\:spinner_input').removeClass('glowing_bottons') 
+    $('#main-form\\:y').removeClass('glowing_bottons')
+
     var x = e.offsetX
         y = e.offsetY;
 
-    //if ($('input[type="checkbox"]:checked').is(":checked")) {
     localStorage.setItem(localStorage.length,
         JSON.stringify({ x: x, y: y, canvas_size: ctx.canvas.width }));
 
@@ -144,10 +148,7 @@ $("#graf").click((e) => {
     document.getElementById("canvas_form:canvas_y").value = y0;
     document.getElementById("canvas_form:canvas_r").value = r;
     canvas_submit();
-    //$("#j_idt10\\:spinner_input").val = a 
-    //$("#j_idt10\\:y").val = b 
 
-    //} else {
     //$('.button-label').addClass('glowing_bottons');
-    //}
+ 
 });
