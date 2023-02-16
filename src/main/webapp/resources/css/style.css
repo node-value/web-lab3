@@ -1,5 +1,5 @@
 body {
-    font-family: sans-serif;
+    font-family: 'Courier New', monospace;
     font-size: 16px;
     color: #555555;
     background-color: #f5f5f5;
@@ -192,10 +192,6 @@ input:invalid,
 .right-alignment {
     float: right;
 }
-
-
-
-
 
 .ui-spinner {
     border: 1px solid #555555;

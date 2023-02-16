@@ -78,12 +78,6 @@ $('#main-form\\:submit-button').click(function () {
         r = $('#main-form\\:r').val()
     if (!validateX(x)) $('#main-form\\:spinner_input').addClass('glowing_bottons');
     if (!validateY(y)) $('#main-form\\:y').addClass('glowing_bottons');
-    //else {
-        //const { x: x0, y: y0 } = inverseTransformCoords(Number(x), Number(y), ctx.canvas.width / 2, Number(r));
-        //storeValues(x0, y0);
-        //drawDot(ctx, x0, y0);
-     // }
-
 });
 
 $('#main-form\\:spinner_input').click(function () {

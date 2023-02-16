@@ -1,18 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <h:head>
+    <h:outputStylesheet library="css" name="time.css" />
+    <meta charset="utf-8" />
     <title>WebLab3</title>
 </h:head>
-<h:body> 
-    <div>
-        <h:link outcome="to_main">
-            To the main page
-        </h:link>
-    </div>
-</h:body>
 
+<h:body>
+    <table class="grid" id="main-grid">
+        <!--header-->
+        <tr>
+            <td class="header" colspan="2">
+                <span class="left-alignment">Vladimirov Nikita Alekseevich</span>
+                <span class="right-alignment">#698260</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="center">
+                    <div id="time"></div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="header" colspan="2">
+                <div class="link-container">
+                    <h:link outcome="to_main">
+                        To the main page
+                    </h:link>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <h:outputScript library="js" name="time.js" />
+</h:body>
 
 </html>
