@@ -24,7 +24,7 @@
         <tr>
             <td id="header" colspan="2">
                 <span class="left-alignment">Vladimirov Nikita Alekseevich</span>
-                <span class="right-alignment">#698260</span>
+                <span class="right-alignment">#6521697</span>
             </td>
         </tr>
         <!--/header-->
@@ -205,14 +205,14 @@
                             <td>
                                 <div class="line">
                                     <h:outputLabel styleClass="head-label" id="x">X:  </h:outputLabel>
-                                    <p:spinner id ="spinner" value="#{pointBean.point.x}" min="-5" max="5" stepFactor="0.1" />
+                                    <p:spinner id ="spinner" value="#{pointBean.point.x}" min="-5.0" max="5.0" stepFactor="0.1" />
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <h:outputLabel styleClass="head-label">Y: </h:outputLabel>
-                                <h:inputText styleClass="y-field" id="y" maxlength="6" autocomplete="off" placeholder="-3...5"
+                                <h:inputText styleClass="y-field" id="y" maxlength="6" autocomplete="off" a:placeholder="-3...5"
                                     value="#{pointBean.point.y}" validatorMessage="Enter a number between -3 and 5">
                                     <f:validateRequired />
                                     <f:validateDoubleRange minimum="-3" maximum="5" />
