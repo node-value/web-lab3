@@ -9,9 +9,11 @@ function resizeCtxCanvas(ctx) {
 }
 
 function redrawDots(ctx) {
+    r = Number(getById('r').val());
     for (let dot of Object.values(localStorage)) {
         dot = JSON.parse(dot);
-        drawDot(ctx, dot.x * (ctx.canvas.width / dot.canvas_size), dot.y * (ctx.canvas.width / dot.canvas_size), dot.hit == "Hit");
+        if (dot.r == r)
+            drawDot(ctx, dot.x * (ctx.canvas.width / dot.canvas_size), dot.y * (ctx.canvas.width / dot.canvas_size), dot.hit == "Hit");
     }
 }
 
@@ -32,7 +34,7 @@ function removeDots(ctx) {
 }
 
 function transformCoords(x, y, half_canvas_size) {
-    r = Number($('#main-form\\:r').val());
+    r = Number(getById('r').val());
     x = ((x - half_canvas_size) * ((r + (r * 0.705)) / half_canvas_size)).toFixed(5);
     y = (((-1 * (y - half_canvas_size))) * ((r + (r * 0.705)) / half_canvas_size)).toFixed(5);
     return { x: x, y: y, r: r };
@@ -53,44 +55,48 @@ function validateY(y) {
     return !(y == undefined || isNaN(y) || y == "" || y > 5 || y < -3);
 }
 
-function storeValues(x, y, hit) {
-    localStorage.setItem(localStorage.length, JSON.stringify({ x: x, y: y, canvas_size: ctx.canvas.width, hit: hit }));
+function storeValues(x, y, hit, r) {
+    localStorage.setItem(localStorage.length, JSON.stringify({ x: x, y: y, canvas_size: ctx.canvas.width, hit: hit, r: r }));
 }
 
 $(document).ready(function () {
     redrawDots(ctx);
 });
 
-$('#main-form\\:reset-button').click(function () {
-    $('#main-form\\:spinner_input').removeClass('glowing_bottons') 
-    $('#main-form\\:y').removeClass('glowing_bottons')
-    $('#main-form\\:spinner_input').val('');
-    $('#main-form\\:y').val('');
-    $('#main-form\\:r').val('1');
+function getById(id) {
+    return $(`#main-form\\:${id}`);
+}
+
+getById('reset-button').click(function () {
+    getById('spinner_input').removeClass('glowing_bottons') 
+    getById('y').removeClass('glowing_bottons')
+    getById('spinner_input').val('');
+    getById('y').val('');
+    getById('r').val('1');
     localStorage.clear();
     removeDots(ctx);
 });
 
 
-$('#main-form\\:submit-button').click(function () {
-    let x = $('#main-form\\:spinner_input').val()
-        y = $('#main-form\\:y').val()
-        r = $('#main-form\\:r').val()
-    if (!validateX(x)) $('#main-form\\:spinner_input').addClass('glowing_bottons');
-    if (!validateY(y)) $('#main-form\\:y').addClass('glowing_bottons');
+getById('submit-button').click(function () {
+    let x = getById('spinner_input').val()
+        y = getById('y').val()
+        r = getById('r').val()
+    if (!validateX(x)) getById('spinner_input').addClass('glowing_bottons');
+    if (!validateY(y)) getById('y').addClass('glowing_bottons');
 });
 
-$('#main-form\\:spinner_input').click(function () {
-    $('#main-form\\:spinner_input').removeClass('glowing_bottons') 
+getById('spinner_input').click(function () {
+    getById('spinner_input').removeClass('glowing_bottons') 
 });
 
-$('#main-form\\:y').click(function () {
-    $('#main-form\\:y').removeClass('glowing_bottons')
+getById('y').click(function () {
+    getById('y').removeClass('glowing_bottons')
 });
 
-$('#main-form\\:r').on('change', function() {
-    localStorage.clear();
+getById('r').on('change', function() {
     removeDots(ctx);
+    redrawDots(ctx);
 });
 
 window.addEventListener('resize', () => {
@@ -100,8 +106,8 @@ window.addEventListener('resize', () => {
 
 
 $("#graf").click((e) => {
-    $('#main-form\\:spinner_input').removeClass('glowing_bottons') 
-    $('#main-form\\:y').removeClass('glowing_bottons')
+    getById('spinner_input').removeClass('glowing_bottons') 
+    getById('y').removeClass('glowing_bottons')
 
     var x = e.offsetX
         y = e.offsetY;
@@ -121,6 +127,6 @@ $("#graf").click((e) => {
 
 function eho(x, y, r, hit) {
     const { x: x0, y: y0 } = inverseTransformCoords(Number(x), Number(y), ctx.canvas.width / 2, Number(r));
-    storeValues(x0, y0, hit);
+    storeValues(x0, y0, hit, Number(r));
     drawDot(ctx, x0, y0, hit == "Hit");
 }

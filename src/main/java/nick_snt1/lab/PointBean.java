@@ -39,12 +39,10 @@ public class PointBean implements Serializable {
     } 
 
     
-
     private void connect() {
         try { 
             DataSource dataSource = (DataSource) new InitialContext().lookup("java:/RootDS");
             conn = dataSource.getConnection();
-            //conn.createStatement().execute("DROP TABLE points");
             conn.createStatement().execute("CREATE TABLE IF NOT EXISTS result_table (" +
                 "id  TEXT             NOT NULL," +
                 "x   DOUBLE PRECISION NOT NULL," +
@@ -60,7 +58,6 @@ public class PointBean implements Serializable {
     public void loadPoints() {
         try {
             if (conn == null) connect();
-            System.out.println("Inside load points");
             PreparedStatement stmt = conn.prepareStatement( "SELECT * FROM result_table WHERE id = ?");
             stmt.setString(1, sessionId);
             ResultSet res = stmt.executeQuery();
@@ -73,10 +70,8 @@ public class PointBean implements Serializable {
     public void addPoint() {
         try {
             if (conn == null) connect();
-            System.out.println("Inside add point");
       
             point.setHit(AreaChecker.isHit(point.getX(), point.getY(), point.getR().doubleValue()) ? "Hit" : "Miss");
-            System.out.println("Points: " + point.getX() + " " + point.getY() + " " + point.getR());
             PreparedStatement stmt = conn.prepareStatement( "INSERT INTO result_table VALUES (?, ?, ?, ?, ?)");
             stmt.setString(1, sessionId);
             stmt.setDouble(2, point.getX());
@@ -84,11 +79,7 @@ public class PointBean implements Serializable {
             stmt.setInt   (4, point.getR());
             stmt.setString(5, point.getHit());
             stmt.execute();
-
-            System.out.println("Statement exec");
-
             points.add(point);
-            System.out.println(points.toString());
             point = new Point();
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,15 +89,11 @@ public class PointBean implements Serializable {
     public void clearPoints() {
         try {
             if (conn == null) connect();
-            System.out.println("Inside clear points");
 
-            PreparedStatement stmt = conn.prepareStatement( "DELETE FROM result_table WHERE id = ?");
-            
+            PreparedStatement stmt = conn.prepareStatement( "DELETE FROM result_table WHERE id = ?"); 
             stmt.setString(1, sessionId);
             stmt.execute();
             points.clear();
-
-            System.out.println("Exec stmt clear");
         } catch (Exception e) {
             e.printStackTrace();
         }
